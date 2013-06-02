@@ -19,6 +19,7 @@ func main() {
 		fmt.Println(err)
 		return
 	}
+
 	fmt.Println("Parsing...\n")
 	program, err := mima.Parse(file)
 	if err != nil {
@@ -34,5 +35,34 @@ func main() {
 	fmt.Println("Instructions")
 	for address, instruction := range program.Instructions {
 		fmt.Printf("%s = %s(%s)\n", address, instruction.Op, instruction.Argument)
+	}
+
+	fmt.Println("\n\nAssembling...\n")
+	bytecode, err := program.Assemble()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	// Print the assembled code.
+	fmt.Printf("Start: 0x%06X\n", bytecode.Start)
+	printMem(bytecode.Mem)
+
+	fmt.Println("\n\nRunning...\n")
+	mem, err := bytecode.Run()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	// Print the resulting memory.
+	printMem(mem)
+
+}
+
+// Print all memory locations which are not 0.
+func printMem(mem []uint32) {
+	for pos, content := range mem {
+		if content != 0 {
+			fmt.Printf("0x%06X: 0x%06X\n", pos, content)
+		}
 	}
 }
