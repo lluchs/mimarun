@@ -29,12 +29,12 @@ func main() {
 	// Print the program.
 	fmt.Println("Pointer")
 	for mark, pointer := range program.Marks {
-		fmt.Println(mark, pointer)
+		fmt.Printf("%-10s 0x%06X = %d\n", mark, pointer, pointer)
 	}
 
-	fmt.Println("Instructions")
+	fmt.Println("\nInstructions")
 	for address, instruction := range program.Instructions {
-		fmt.Printf("%s = %s(%s)\n", address, instruction.Op, instruction.Argument)
+		fmt.Printf("0x%06X = %s(%s)\n", address, instruction.Op, instruction.Argument)
 	}
 
 	fmt.Println("\n\nAssembling...\n")
