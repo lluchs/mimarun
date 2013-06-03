@@ -27,15 +27,7 @@ func main() {
 		return
 	}
 	// Print the program.
-	fmt.Println("Pointer")
-	for mark, pointer := range program.Marks {
-		fmt.Printf("%-10s 0x%06X = %d\n", mark, pointer, pointer)
-	}
-
-	fmt.Println("\nInstructions")
-	for address, instruction := range program.Instructions {
-		fmt.Printf("0x%06X = %s(%s)\n", address, instruction.Op, instruction.Argument)
-	}
+	PrintProgram(program)
 
 	fmt.Println("\n\nAssembling...\n")
 	bytecode, err := program.Assemble()
@@ -45,7 +37,7 @@ func main() {
 	}
 	// Print the assembled code.
 	fmt.Printf("Start: 0x%06X\n", bytecode.Start)
-	printMem(bytecode.Mem)
+	PrintMem(bytecode.Mem)
 
 	fmt.Println("\n\nRunning...\n")
 	mem, err := bytecode.Run()
@@ -54,15 +46,6 @@ func main() {
 		return
 	}
 	// Print the resulting memory.
-	printMem(mem)
+	PrintMem(mem)
 
-}
-
-// Print all memory locations which are not 0.
-func printMem(mem []uint32) {
-	for pos, content := range mem {
-		if content != 0 {
-			fmt.Printf("0x%06X: 0x%06X\n", pos, content)
-		}
-	}
 }
