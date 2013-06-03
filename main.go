@@ -53,6 +53,7 @@ func main() {
 	switch command {
 	case "analyze":
 		mem, err = bytecode.Debug(analyze(bytecode))
+		fmt.Println("")
 	default:
 		mem, err = bytecode.Run()
 	}
@@ -61,6 +62,7 @@ func main() {
 		return
 	}
 	// Print the resulting memory.
+	fmt.Println("Result Memory:")
 	PrintMem(mem)
 
 }
