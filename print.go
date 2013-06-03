@@ -4,6 +4,7 @@ package main
 
 import (
 	"fmt"
+	"sort"
 
 	"github.com/lluchs/mima"
 )
@@ -16,9 +17,18 @@ func PrintProgram(program *mima.Program) {
 	}
 
 	fmt.Println("\nInstructions")
-	for address, instruction := range program.Instructions {
+	// Sorted output
+	keys := make([]int, 0, len(program.Instructions))
+	for address := range program.Instructions {
+		// This is safe as our addresses have 24 bits maximum.
+		keys = append(keys, (int)(address))
+	}
+	sort.Ints(keys)
+	for _, address := range keys {
+		instruction := program.Instructions[(uint32)(address)]
 		fmt.Printf("0x%06X = %s(%s)\n", address, instruction.Op, instruction.Argument)
 	}
+
 }
 
 // Print all memory locations which are not 0.
