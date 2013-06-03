@@ -8,17 +8,26 @@ import (
 )
 
 func main() {
-	if len(os.Args) != 2 {
+	argc := len(os.Args)
+	if argc != 2 && argc != 3 {
 		fmt.Println("Usage: mimarun <filename>")
 		return
 	}
+	var filename, command string
+	if argc == 2 {
+		command = "run"
+		filename = os.Args[1]
+	} else {
+		command = os.Args[1]
+		filename = os.Args[2]
+	}
 
-	filename := os.Args[1]
 	file, err := os.Open(filename)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
+	defer file.Close()
 
 	fmt.Println("Parsing...\n")
 	program, err := mima.Parse(file)
@@ -40,7 +49,13 @@ func main() {
 	PrintMem(bytecode.Mem)
 
 	fmt.Println("\n\nRunning...\n")
-	mem, err := bytecode.Run()
+	var mem []uint32
+	switch command {
+	case "analyze":
+		mem, err = bytecode.Debug(analyze(bytecode))
+	default:
+		mem, err = bytecode.Run()
+	}
 	if err != nil {
 		fmt.Println(err)
 		return
