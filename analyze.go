@@ -9,10 +9,10 @@ import (
 // Returns a MIMA debug function for analyzing program execution.
 func analyze(bytecode *mima.Bytecode) mima.DebugFunc {
 	lastMem := bytecode.Mem
+	lastIAR := bytecode.Start
 	i := 1
-	fmt.Println("Step |   Akku   | Memory Changes")
-	fmt.Println("--------------------------------")
-	fmt.Println("   0 | 0x000000 |")
+	fmt.Println("Step |   IAR    |    IR    |   Akku   | Memory Changes")
+	fmt.Println("------------------------------------------------------")
 	return func(state *mima.State) {
 		// Compare memory in order to find changes.
 		changed := ""
@@ -24,10 +24,11 @@ func analyze(bytecode *mima.Bytecode) mima.DebugFunc {
 			}
 		}
 		// Output
-		fmt.Printf("%4d | 0x%6X | %s\n", i, state.Akku, changed)
+		fmt.Printf("%4d | 0x%06X | 0x%06X | 0x%6X | %s\n", i, lastIAR, state.IR, state.Akku, changed)
 		// Copy the memory to be able to compare again.
 		lastMem = make([]uint32, len(lastMem))
 		copy(lastMem, state.Mem)
+		lastIAR = state.IAR
 		i++
 	}
 }
